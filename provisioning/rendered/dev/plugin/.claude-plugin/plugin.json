@@ -1,0 +1,29 @@
+{
+  "name": "meridian-usage-dev",
+  "displayName": "Meridian AI usage (dev)",
+  "version": "0.1.0",
+  "description": "Ask how much your team used Claude and Gemini, who used it most, and which capabilities are on. Answers are limited to what your role may see.",
+  "author": {
+    "name": "Meridian IT Platform"
+  },
+  "keywords": [
+    "usage",
+    "cost",
+    "mcp",
+    "dev"
+  ],
+  "userConfig": {
+    "user_email": {
+      "type": "string",
+      "title": "Your Meridian email",
+      "description": "The directory account this connector acts as. Simulated identity: in production this comes from single sign-on, not a prompt.",
+      "required": true
+    },
+    "service_url": {
+      "type": "string",
+      "title": "Usage service URL",
+      "description": "The dev usage service.",
+      "default": "http://127.0.0.1:8000"
+    }
+  }
+}

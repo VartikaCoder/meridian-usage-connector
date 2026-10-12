@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: service/uv.lock
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: connector/package-lock.json
+
+      - name: Install (from lockfiles only)
+        run: |
+          (cd service && uv sync --locked)
+          (cd connector && npm ci)
+
+      - name: Lint
+        run: make lint
+
+      - name: Type-check
+        run: make typecheck
+
+      - name: Test (service, connector, and end to end over MCP)
+        run: make test
+
+      - name: Provisioning is valid and matches what is committed
+        run: make provision-check
+
+      - name: Build connector and package the plugins
+        run: |
+          make build
+          make package

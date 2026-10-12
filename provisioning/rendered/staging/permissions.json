@@ -1,0 +1,360 @@
+{
+  "generated_by": "make provision (meridian_usage.provisioning); do not edit by hand",
+  "sources": {
+    "environments/staging.yaml": "sha256:3a3bb97f0f08306cf9acdbf826eb4f7d0f40637f20f47fdb768d3be2168bf537",
+    "contracts/tools.schema.json": "sha256:8df8cba38cb26337e54769bd7eb767019588f317a204eef5c81e2cae09482d0a",
+    "provisioning/hosts.yaml": "sha256:59baa0c80d19d7cf1a7fdf4d26c615c8cf73e038fe8e264c486f6dc90e06d6bd"
+  },
+  "environment": "staging",
+  "server_name": "meridian-usage-staging",
+  "service_url": "http://127.0.0.1:8001",
+  "tools": {
+    "usage_summary": "usage:read",
+    "top_users": "usage:read",
+    "capability_status": "usage:read",
+    "set_capability": "capabilities:write"
+  },
+  "scopes": {
+    "usage:read": {
+      "roles": [
+        "platform_admin",
+        "team_lead"
+      ],
+      "group_visibility": "own_group",
+      "admins_see_all_groups": true
+    },
+    "capabilities:write": {
+      "roles": [
+        "platform_admin",
+        "team_lead"
+      ],
+      "target_groups": "visible_groups_only"
+    }
+  },
+  "capability_defaults": {
+    "clinical-operations": {
+      "usage-connector": true,
+      "web-search": true,
+      "code-execution": false
+    },
+    "finance": {
+      "usage-connector": true,
+      "web-search": true,
+      "code-execution": false
+    },
+    "hr": {
+      "usage-connector": true,
+      "web-search": true,
+      "code-execution": false
+    },
+    "it-platform": {
+      "usage-connector": true,
+      "web-search": true,
+      "code-execution": false
+    },
+    "medical-writing": {
+      "usage-connector": true,
+      "web-search": true,
+      "code-execution": false
+    },
+    "regulatory-affairs": {
+      "usage-connector": true,
+      "web-search": true,
+      "code-execution": false
+    }
+  },
+  "users": [
+    {
+      "user_id": "user_B1AA49EEED515A8B4C2254F5",
+      "email": "aisha.rahman@meridianls.example",
+      "role": "member",
+      "groups": [
+        "clinical-operations"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_699C48763F6FA2958D2CDB5D",
+      "email": "daniel.okafor@meridianls.example",
+      "role": "member",
+      "groups": [
+        "clinical-operations"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_5259D5870F22E6611FE78F49",
+      "email": "tomasz.kowalski@meridianls.example",
+      "role": "member",
+      "groups": [
+        "clinical-operations"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_E7691888F28227066DD2FB86",
+      "email": "priya.nair@meridianls.example",
+      "role": "team_lead",
+      "groups": [
+        "clinical-operations"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "clinical-operations"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_454C30EA4FD6317D4D3390BD",
+      "email": "hannah.fischer@meridianls.example",
+      "role": "member",
+      "groups": [
+        "finance"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_BF28D9E864C2318ED312A3F5",
+      "email": "ravi.iyer@meridianls.example",
+      "role": "member",
+      "groups": [
+        "finance"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_0CF0516C4D9067BED584DB3F",
+      "email": "sofia.rossi@meridianls.example",
+      "role": "team_lead",
+      "groups": [
+        "finance"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "finance"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_337387845926467C11D43128",
+      "email": "marcus.bennett@meridianls.example",
+      "role": "member",
+      "groups": [
+        "hr"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_4DDA8BD860906E1802392E9E",
+      "email": "yuki.tanaka@meridianls.example",
+      "role": "member",
+      "groups": [
+        "hr"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_EFD3FFD905F1F3A62F1AE916",
+      "email": "diego.alvarez@meridianls.example",
+      "role": "team_lead",
+      "groups": [
+        "hr"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "hr"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_AC569166A0A94D7A4B14DBEB",
+      "email": "felix.bauer@meridianls.example",
+      "role": "member",
+      "groups": [
+        "it-platform"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_39F097897A80367CEA4152ED",
+      "email": "nadia.karim@meridianls.example",
+      "role": "member",
+      "groups": [
+        "it-platform"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_20FFD6524F256B8D69E6E2F2",
+      "email": "arjun.mehta@meridianls.example",
+      "role": "platform_admin",
+      "groups": [
+        "it-platform"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "clinical-operations",
+        "finance",
+        "hr",
+        "it-platform",
+        "medical-writing",
+        "regulatory-affairs"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_533B58E6F66C98ACB833527A",
+      "email": "chloe.dubois@meridianls.example",
+      "role": "platform_admin",
+      "groups": [
+        "it-platform"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "clinical-operations",
+        "finance",
+        "hr",
+        "it-platform",
+        "medical-writing",
+        "regulatory-affairs"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_D513BD91AAB20411FC510A2A",
+      "email": "kwame.mensah@meridianls.example",
+      "role": "team_lead",
+      "groups": [
+        "it-platform"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "it-platform"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_CA8D914FC4B2D868B1016428",
+      "email": "ingrid.solberg@meridianls.example",
+      "role": "member",
+      "groups": [
+        "medical-writing"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_27A35769D5401F23F6A15604",
+      "email": "samuel.adeyemi@meridianls.example",
+      "role": "member",
+      "groups": [
+        "medical-writing"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_FA89F4D169328073239C6B6E",
+      "email": "elena.petrova@meridianls.example",
+      "role": "team_lead",
+      "groups": [
+        "medical-writing"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "medical-writing"
+      ],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_E3F6880CD4C96210FF515D1B",
+      "email": "fatima.haddad@meridianls.example",
+      "role": "member",
+      "groups": [
+        "regulatory-affairs"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_665DCB103C2F8DEE3C946C7A",
+      "email": "jonas.lindqvist@meridianls.example",
+      "role": "member",
+      "groups": [
+        "regulatory-affairs"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_7E98033B84A18835BAAC3FD2",
+      "email": "lucas.moreau@meridianls.example",
+      "role": "member",
+      "groups": [
+        "regulatory-affairs"
+      ],
+      "scopes": [],
+      "visible_groups": [],
+      "connector_default": true
+    },
+    {
+      "user_id": "user_B3DEF4602E6A0912588C6D50",
+      "email": "mei.chen@meridianls.example",
+      "role": "team_lead",
+      "groups": [
+        "regulatory-affairs"
+      ],
+      "scopes": [
+        "usage:read",
+        "capabilities:write"
+      ],
+      "visible_groups": [
+        "regulatory-affairs"
+      ],
+      "connector_default": true
+    }
+  ]
+}

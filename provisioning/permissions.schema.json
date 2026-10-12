@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Meridian usage connector: rendered permissions manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "generated_by",
+    "sources",
+    "environment",
+    "server_name",
+    "service_url",
+    "tools",
+    "scopes",
+    "capability_defaults",
+    "users"
+  ],
+  "properties": {
+    "generated_by": { "type": "string" },
+    "sources": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+    },
+    "environment": { "enum": ["dev", "staging", "prod"] },
+    "server_name": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "service_url": { "type": "string", "format": "uri" },
+    "tools": {
+      "type": "object",
+      "minProperties": 4,
+      "additionalProperties": { "$ref": "#/$defs/scope" }
+    },
+    "scopes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["usage:read", "capabilities:write"],
+      "properties": {
+        "usage:read": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["roles", "group_visibility"],
+          "properties": {
+            "roles": { "$ref": "#/$defs/roles" },
+            "group_visibility": { "enum": ["all", "own_group"] },
+            "admins_see_all_groups": { "type": "boolean" }
+          }
+        },
+        "capabilities:write": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["roles", "target_groups"],
+          "properties": {
+            "roles": { "$ref": "#/$defs/roles" },
+            "target_groups": { "const": "visible_groups_only" }
+          }
+        }
+      }
+    },
+    "capability_defaults": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["usage-connector", "web-search", "code-execution"],
+        "properties": {
+          "usage-connector": { "type": "boolean" },
+          "web-search": { "type": "boolean" },
+          "code-execution": { "type": "boolean" }
+        }
+      }
+    },
+    "users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["user_id", "email", "role", "groups", "scopes", "visible_groups", "connector_default"],
+        "properties": {
+          "user_id": { "type": "string" },
+          "email": { "type": "string" },
+          "role": { "$ref": "#/$defs/role" },
+          "groups": { "type": "array", "items": { "type": "string" } },
+          "scopes": { "type": "array", "items": { "$ref": "#/$defs/scope" }, "uniqueItems": true },
+          "visible_groups": { "type": "array", "items": { "type": "string" } },
+          "connector_default": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "scope": { "enum": ["usage:read", "capabilities:write"] },
+    "role": { "enum": ["member", "team_lead", "platform_admin"] },
+    "roles": { "type": "array", "items": { "$ref": "#/$defs/role" }, "uniqueItems": true }
+  }
+}
