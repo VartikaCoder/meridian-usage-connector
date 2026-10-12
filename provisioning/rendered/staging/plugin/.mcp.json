@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "meridian-usage-staging": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/index.mjs"
+      ],
+      "env": {
+        "MERIDIAN_USER": "${user_config.user_email}",
+        "MERIDIAN_SERVICE_URL": "${user_config.service_url}",
+        "MERIDIAN_SERVER_NAME": "meridian-usage-staging"
+      }
+    }
+  }
+}

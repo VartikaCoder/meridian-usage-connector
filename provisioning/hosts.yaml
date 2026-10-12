@@ -1,0 +1,9 @@
+# Per-environment host settings that are not access policy. Access policy (who may do what)
+# lives only in starter-kit/environments/<env>.yaml; this file says where each environment's
+# usage service is. Locally the three environments run side by side on different ports.
+dev:
+  service_url: http://127.0.0.1:8000
+staging:
+  service_url: http://127.0.0.1:8001
+prod:
+  service_url: http://127.0.0.1:8002
