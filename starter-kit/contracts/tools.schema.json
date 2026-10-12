@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Meridian usage connector \u2014 MCP tool contract",
+  "$defs": {
+    "Period": {
+      "type": "string",
+      "description": "last_7_days | last_30_days | an ISO week such as 2026-W36 | a month such as 2026-09",
+      "pattern": "^(last_7_days|last_30_days|\\d{4}-W\\d{2}|\\d{4}-\\d{2})$"
+    },
+    "GroupId": {
+      "type": "string",
+      "enum": [
+        "clinical-operations",
+        "regulatory-affairs",
+        "finance",
+        "hr",
+        "medical-writing",
+        "it-platform"
+      ]
+    },
+    "Capability": {
+      "type": "string",
+      "enum": [
+        "usage-connector",
+        "web-search",
+        "code-execution"
+      ]
+    },
+    "PlatformTotals": {
+      "type": "object",
+      "required": [
+        "platform",
+        "input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "cost_usd"
+      ],
+      "properties": {
+        "platform": {
+          "enum": [
+            "claude",
+            "gemini"
+          ]
+        },
+        "requests": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "input_tokens": {
+          "type": "integer"
+        },
+        "output_tokens": {
+          "type": "integer"
+        },
+        "total_tokens": {
+          "type": "integer"
+        },
+        "cost_usd": {
+          "type": "number"
+        }
+      }
+    },
+    "Denial": {
+      "type": "object",
+      "required": [
+        "error",
+        "reason"
+      ],
+      "properties": {
+        "error": {
+          "const": "permission_denied"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "required_scope": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "tools": {
+    "usage_summary": {
+      "input": {
+        "type": "object",
+        "required": [
+          "period"
+        ],
+        "properties": {
+          "group": {
+            "$ref": "#/$defs/GroupId"
+          },
+          "period": {
+            "$ref": "#/$defs/Period"
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "group",
+          "period",
+          "platforms",
+          "totals"
+        ],
+        "properties": {
+          "group": {
+            "type": "string"
+          },
+          "period": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date"
+              },
+              "end_exclusive": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PlatformTotals"
+            }
+          },
+          "totals": {
+            "type": "object",
+            "properties": {
+              "total_tokens": {
+                "type": "integer"
+              },
+              "cost_usd": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "scope": "usage:read"
+    },
+    "top_users": {
+      "input": {
+        "type": "object",
+        "required": [
+          "period"
+        ],
+        "properties": {
+          "group": {
+            "$ref": "#/$defs/GroupId"
+          },
+          "period": {
+            "$ref": "#/$defs/Period"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10
+          }
+        }
+      },
+      "output": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "user_id",
+            "name",
+            "group",
+            "total_tokens",
+            "cost_usd"
+          ],
+          "properties": {
+            "user_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "group": {
+              "type": "string"
+            },
+            "total_tokens": {
+              "type": "integer"
+            },
+            "cost_usd": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "scope": "usage:read"
+    },
+    "capability_status": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/$defs/GroupId"
+          }
+        }
+      },
+      "output": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "group",
+            "capability",
+            "enabled"
+          ],
+          "properties": {
+            "group": {
+              "type": "string"
+            },
+            "capability": {
+              "$ref": "#/$defs/Capability"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "updated_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updated_by": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "scope": "usage:read"
+    },
+    "set_capability": {
+      "input": {
+        "type": "object",
+        "required": [
+          "group",
+          "capability",
+          "enabled"
+        ],
+        "properties": {
+          "group": {
+            "$ref": "#/$defs/GroupId"
+          },
+          "capability": {
+            "$ref": "#/$defs/Capability"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "group",
+          "capability",
+          "enabled",
+          "updated_at",
+          "updated_by"
+        ]
+      },
+      "scope": "capabilities:write"
+    }
+  },
+  "denial": {
+    "$ref": "#/$defs/Denial",
+    "description": "Every tool returns this shape (as an error result) when the caller lacks the scope, asks for a group they may not see, or the capability is disabled for their group."
+  }
+}

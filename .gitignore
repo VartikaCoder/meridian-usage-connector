@@ -1,0 +1,44 @@
+# --- The assignment brief (the company's document; not part of the submission) -----------
+ASSIGNMENT.*
+
+# --- Python (service/) ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# --- Node (connector/) ------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+*.tsbuildinfo
+
+# --- Build output: rebuilt by `make build`, `make bundle`, `make package` ----------------
+# connector/dist/ (tsc output and the bundled index.mjs) and dist/marketplace/ (plugins)
+dist/
+
+# --- Local runtime state ----------------------------------------------------------------
+# SQLite capability stores, one per environment (var/meridian-<env>.sqlite3)
+var/
+*.sqlite3
+*.sqlite3-journal
+
+# --- Secrets, just in case --------------------------------------------------------------
+.env
+.env.*
+
+# --- OS and editors ---------------------------------------------------------------------
+.DS_Store
+__MACOSX/
+.idea/
+.vscode/
+*.swp
+
+# --- Kept in git on purpose (listed so nobody "tidies" them away) ------------------------
+# provisioning/rendered/   generated, but committed: CI fails if it is stale or hand-edited
+# service/uv.lock          CI installs with --locked
+# connector/package-lock.json   CI installs with npm ci

@@ -1,0 +1,14 @@
+# dev — everyone can read everything; leads may toggle controls; nothing disabled by default
+environment: dev
+scopes:
+  usage:read:
+    roles: [member, team_lead, platform_admin]
+    group_visibility: all            # any caller may read any group
+  capabilities:write:
+    roles: [team_lead, platform_admin]
+capability_defaults:                 # applied on first start unless the store already has a value
+  usage-connector: enabled
+  web-search: enabled
+  code-execution: enabled
+host:
+  server_name: meridian-usage-dev

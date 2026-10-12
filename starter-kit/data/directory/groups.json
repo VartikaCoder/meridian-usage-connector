@@ -1,0 +1,61 @@
+{
+  "source": "Meridian identity provider \u2014 nightly SCIM export (simulated)",
+  "exported_at": "2026-09-28T02:00:00Z",
+  "notes": "claude_rbac_group_id is the RBAC group the identity provider syncs into Claude Enterprise; gcp_project_id is the Google Cloud project the group's Gemini workloads run in.",
+  "groups": [
+    {
+      "group_id": "clinical-operations",
+      "name": "Clinical Operations",
+      "team_lead_user_id": "user_E7691888F28227066DD2FB86",
+      "claude_rbac_group_id": "rbac_group_33DEEC83113481C9BD69498282",
+      "gcp_project_id": "meridian-clinops-prod",
+      "gcp_project_number": "100870247555",
+      "cost_centre": "CC-33DE"
+    },
+    {
+      "group_id": "regulatory-affairs",
+      "name": "Regulatory Affairs",
+      "team_lead_user_id": "user_B3DEF4602E6A0912588C6D50",
+      "claude_rbac_group_id": "rbac_group_0DB2B90B3C3C586E0ADDF3E21E",
+      "gcp_project_id": "meridian-regaffairs-prod",
+      "gcp_project_number": "100229816587",
+      "cost_centre": "CC-0DB2"
+    },
+    {
+      "group_id": "finance",
+      "name": "Finance",
+      "team_lead_user_id": "user_0CF0516C4D9067BED584DB3F",
+      "claude_rbac_group_id": "rbac_group_A1CF62AF599E2C2403CD6542A3",
+      "gcp_project_id": "meridian-finance-prod",
+      "gcp_project_number": "102714722991",
+      "cost_centre": "CC-A1CF"
+    },
+    {
+      "group_id": "hr",
+      "name": "Human Resources",
+      "team_lead_user_id": "user_EFD3FFD905F1F3A62F1AE916",
+      "claude_rbac_group_id": "rbac_group_51BD95353AEDA6615433BEA218",
+      "gcp_project_id": "meridian-hr-prod",
+      "gcp_project_number": "101371378997",
+      "cost_centre": "CC-51BD"
+    },
+    {
+      "group_id": "medical-writing",
+      "name": "Medical Writing",
+      "team_lead_user_id": "user_FA89F4D169328073239C6B6E",
+      "claude_rbac_group_id": "rbac_group_A2C3CE478DC38BE7CB41B2E883",
+      "gcp_project_id": "meridian-medwriting-prod",
+      "gcp_project_number": "102730741319",
+      "cost_centre": "CC-A2C3"
+    },
+    {
+      "group_id": "it-platform",
+      "name": "IT Platform",
+      "team_lead_user_id": "user_D513BD91AAB20411FC510A2A",
+      "claude_rbac_group_id": "rbac_group_83160650CD138E5AFEA0995F9D",
+      "gcp_project_id": "meridian-aiplatform-prod",
+      "gcp_project_number": "102199258704",
+      "cost_centre": "CC-8316"
+    }
+  ]
+}

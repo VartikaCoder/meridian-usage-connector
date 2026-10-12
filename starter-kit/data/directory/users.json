@@ -1,0 +1,253 @@
+{
+  "source": "Meridian identity provider \u2014 nightly SCIM export (simulated)",
+  "exported_at": "2026-09-28T02:00:00Z",
+  "roles": {
+    "member": "Ordinary seat holder",
+    "team_lead": "Sees their own group's usage",
+    "platform_admin": "Sees every group; may change capability controls"
+  },
+  "users": [
+    {
+      "user_id": "user_E7691888F28227066DD2FB86",
+      "email": "priya.nair@meridianls.example",
+      "name": "Priya Nair",
+      "role": "team_lead",
+      "group_ids": [
+        "clinical-operations"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:priya.nair@meridianls.example"
+    },
+    {
+      "user_id": "user_699C48763F6FA2958D2CDB5D",
+      "email": "daniel.okafor@meridianls.example",
+      "name": "Daniel Okafor",
+      "role": "member",
+      "group_ids": [
+        "clinical-operations"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:daniel.okafor@meridianls.example"
+    },
+    {
+      "user_id": "user_B1AA49EEED515A8B4C2254F5",
+      "email": "aisha.rahman@meridianls.example",
+      "name": "Aisha Rahman",
+      "role": "member",
+      "group_ids": [
+        "clinical-operations"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:aisha.rahman@meridianls.example"
+    },
+    {
+      "user_id": "user_5259D5870F22E6611FE78F49",
+      "email": "tomasz.kowalski@meridianls.example",
+      "name": "Tomasz Kowalski",
+      "role": "member",
+      "group_ids": [
+        "clinical-operations"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:tomasz.kowalski@meridianls.example"
+    },
+    {
+      "user_id": "user_B3DEF4602E6A0912588C6D50",
+      "email": "mei.chen@meridianls.example",
+      "name": "Mei Chen",
+      "role": "team_lead",
+      "group_ids": [
+        "regulatory-affairs"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:mei.chen@meridianls.example"
+    },
+    {
+      "user_id": "user_7E98033B84A18835BAAC3FD2",
+      "email": "lucas.moreau@meridianls.example",
+      "name": "Lucas Moreau",
+      "role": "member",
+      "group_ids": [
+        "regulatory-affairs"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:lucas.moreau@meridianls.example"
+    },
+    {
+      "user_id": "user_E3F6880CD4C96210FF515D1B",
+      "email": "fatima.haddad@meridianls.example",
+      "name": "Fatima Haddad",
+      "role": "member",
+      "group_ids": [
+        "regulatory-affairs"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:fatima.haddad@meridianls.example"
+    },
+    {
+      "user_id": "user_665DCB103C2F8DEE3C946C7A",
+      "email": "jonas.lindqvist@meridianls.example",
+      "name": "Jonas Lindqvist",
+      "role": "member",
+      "group_ids": [
+        "regulatory-affairs"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:jonas.lindqvist@meridianls.example"
+    },
+    {
+      "user_id": "user_0CF0516C4D9067BED584DB3F",
+      "email": "sofia.rossi@meridianls.example",
+      "name": "Sofia Rossi",
+      "role": "team_lead",
+      "group_ids": [
+        "finance"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:sofia.rossi@meridianls.example"
+    },
+    {
+      "user_id": "user_BF28D9E864C2318ED312A3F5",
+      "email": "ravi.iyer@meridianls.example",
+      "name": "Ravi Iyer",
+      "role": "member",
+      "group_ids": [
+        "finance"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:ravi.iyer@meridianls.example"
+    },
+    {
+      "user_id": "user_454C30EA4FD6317D4D3390BD",
+      "email": "hannah.fischer@meridianls.example",
+      "name": "Hannah Fischer",
+      "role": "member",
+      "group_ids": [
+        "finance"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:hannah.fischer@meridianls.example"
+    },
+    {
+      "user_id": "user_EFD3FFD905F1F3A62F1AE916",
+      "email": "diego.alvarez@meridianls.example",
+      "name": "Diego Alvarez",
+      "role": "team_lead",
+      "group_ids": [
+        "hr"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:diego.alvarez@meridianls.example"
+    },
+    {
+      "user_id": "user_4DDA8BD860906E1802392E9E",
+      "email": "yuki.tanaka@meridianls.example",
+      "name": "Yuki Tanaka",
+      "role": "member",
+      "group_ids": [
+        "hr"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:yuki.tanaka@meridianls.example"
+    },
+    {
+      "user_id": "user_337387845926467C11D43128",
+      "email": "marcus.bennett@meridianls.example",
+      "name": "Marcus Bennett",
+      "role": "member",
+      "group_ids": [
+        "hr"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:marcus.bennett@meridianls.example"
+    },
+    {
+      "user_id": "user_FA89F4D169328073239C6B6E",
+      "email": "elena.petrova@meridianls.example",
+      "name": "Elena Petrova",
+      "role": "team_lead",
+      "group_ids": [
+        "medical-writing"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:elena.petrova@meridianls.example"
+    },
+    {
+      "user_id": "user_27A35769D5401F23F6A15604",
+      "email": "samuel.adeyemi@meridianls.example",
+      "name": "Samuel Adeyemi",
+      "role": "member",
+      "group_ids": [
+        "medical-writing"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:samuel.adeyemi@meridianls.example"
+    },
+    {
+      "user_id": "user_CA8D914FC4B2D868B1016428",
+      "email": "ingrid.solberg@meridianls.example",
+      "name": "Ingrid Solberg",
+      "role": "member",
+      "group_ids": [
+        "medical-writing"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:ingrid.solberg@meridianls.example"
+    },
+    {
+      "user_id": "user_D513BD91AAB20411FC510A2A",
+      "email": "kwame.mensah@meridianls.example",
+      "name": "Kwame Mensah",
+      "role": "team_lead",
+      "group_ids": [
+        "it-platform"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:kwame.mensah@meridianls.example"
+    },
+    {
+      "user_id": "user_533B58E6F66C98ACB833527A",
+      "email": "chloe.dubois@meridianls.example",
+      "name": "Chloe Dubois",
+      "role": "platform_admin",
+      "group_ids": [
+        "it-platform"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:chloe.dubois@meridianls.example"
+    },
+    {
+      "user_id": "user_20FFD6524F256B8D69E6E2F2",
+      "email": "arjun.mehta@meridianls.example",
+      "name": "Arjun Mehta",
+      "role": "platform_admin",
+      "group_ids": [
+        "it-platform"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:arjun.mehta@meridianls.example"
+    },
+    {
+      "user_id": "user_39F097897A80367CEA4152ED",
+      "email": "nadia.karim@meridianls.example",
+      "name": "Nadia Karim",
+      "role": "member",
+      "group_ids": [
+        "it-platform"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:nadia.karim@meridianls.example"
+    },
+    {
+      "user_id": "user_AC569166A0A94D7A4B14DBEB",
+      "email": "felix.bauer@meridianls.example",
+      "name": "Felix Bauer",
+      "role": "member",
+      "group_ids": [
+        "it-platform"
+      ],
+      "claude_seat": true,
+      "gcp_principal": "user:felix.bauer@meridianls.example"
+    }
+  ]
+}

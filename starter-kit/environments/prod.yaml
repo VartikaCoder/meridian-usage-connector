@@ -1,0 +1,15 @@
+# prod — leads read their own group; only platform admins read all groups or change controls
+environment: prod
+scopes:
+  usage:read:
+    roles: [team_lead, platform_admin]
+    group_visibility: own_group
+  capabilities:write:
+    roles: [platform_admin]
+capability_defaults:
+  usage-connector:
+    enabled_for: [it-platform, clinical-operations]   # everyone else disabled until requested
+  web-search: enabled
+  code-execution: disabled
+host:
+  server_name: meridian-usage

@@ -1,0 +1,14 @@
+# staging — production visibility rules; leads may still toggle controls for acceptance testing
+environment: staging
+scopes:
+  usage:read:
+    roles: [team_lead, platform_admin]
+    group_visibility: own_group      # team_lead: own group only; platform_admin: all groups
+  capabilities:write:
+    roles: [team_lead, platform_admin]
+capability_defaults:
+  usage-connector: enabled
+  web-search: enabled
+  code-execution: disabled
+host:
+  server_name: meridian-usage-staging
