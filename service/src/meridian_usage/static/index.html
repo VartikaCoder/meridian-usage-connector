@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian AI Usage Admin</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e3e2dd;
+    --accent: #2f5d8a; --claude: #c4673f; --gemini: #3f7fc4; --deny-bg: #fdf0ee; --deny: #a3341f;
+    --ok: #2e7d4f;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+         background: var(--bg); color: var(--ink); }
+  header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center;
+           padding: 14px 20px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0; }
+  .env { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: #eef2f7; color: var(--accent); }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px; display: grid; gap: 16px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+  section h2 { font-size: 14px; margin: 0 0 10px; }
+  label { color: var(--muted); font-size: 12px; margin-right: 6px; }
+  select, button { font: inherit; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  tfoot td { font-weight: 600; border-top: 2px solid var(--line); }
+  .muted { color: var(--muted); }
+  .denial { background: var(--deny-bg); color: var(--deny); border-radius: 6px; padding: 10px 12px; }
+  .denial code { color: inherit; }
+  .note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .me { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; background: #f0efea; margin: 0 4px 4px 0; font-size: 12px; }
+  .bar { display: inline-block; height: 8px; border-radius: 2px; vertical-align: middle; margin-left: 6px; }
+  .scroll { overflow-x: auto; }
+  .toast { position: fixed; bottom: 16px; right: 16px; padding: 10px 14px; border-radius: 6px;
+           background: var(--ink); color: #fff; opacity: 0; transition: opacity .2s; max-width: 420px; }
+  .toast.show { opacity: .95; }
+  td.cap input { width: 16px; height: 16px; }
+  .grid2 { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  main > *, .grid2 > * { min-width: 0; } /* let wide tables scroll inside their panel */
+  @media (min-width: 900px) { .grid2 { grid-template-columns: 2fr 3fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Meridian AI usage</h1>
+  <span class="env" id="env">…</span>
+  <span><label for="who">Acting as</label><select id="who"></select></span>
+  <span><label for="period">Period</label><select id="period"></select></span>
+  <span class="muted" style="font-size:12px">Identity is simulated: the selected user is sent as <code>X-Meridian-User</code>.</span>
+</header>
+
+<main>
+  <section id="me-section"><h2>Who you are here</h2><div id="me"></div></section>
+
+  <section>
+    <h2>Usage and cost by group</h2>
+    <div class="scroll" id="by-group"></div>
+  </section>
+
+  <section>
+    <h2>By week
+      <span style="font-weight:normal"><label for="week-group" style="margin-left:12px">Group</label><select id="week-group"></select></span>
+    </h2>
+    <div class="scroll" id="weekly"></div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>Capability controls</h2>
+      <div class="scroll" id="caps"></div>
+    </section>
+    <section>
+      <h2>Recent changes</h2>
+      <div class="scroll" id="audit"></div>
+    </section>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const PERIODS = ["last_7_days", "last_30_days", "2026-09", "2026-08",
+  ...Array.from({ length: 8 }, (_, i) => `2026-W${39 - i}`)];
+const CAPS = ["usage-connector", "web-search", "code-execution"];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const tok = (n) => n == null ? "–" : Number(n).toLocaleString("en-US");
+const usd = (n) => n == null ? "–" : "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
+};
+
+let me = null;
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    ...opts,
+    headers: { "Content-Type": "application/json", "X-Meridian-User": $("who").value, ...(opts.headers || {}) },
+  });
+  const body = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, body };
+}
+
+function denial(body) {
+  const scope = body.required_scope ? ` <span class="muted">(needs <code>${esc(body.required_scope)}</code>)</span>` : "";
+  return `<div class="denial"><strong>Not allowed.</strong> ${esc(body.reason || body.detail || "Request failed")}${scope}</div>`;
+}
+
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 3500);
+}
+
+async function loadUsers() {
+  const res = await fetch("/api/directory/users");
+  const users = await res.json();
+  const byGroup = {};
+  for (const u of users) (byGroup[u.group_ids[0] || "—"] ??= []).push(u);
+  $("who").innerHTML = Object.entries(byGroup).map(([g, us]) =>
+    `<optgroup label="${esc(g)}">` +
+    us.map((u) => `<option value="${esc(u.user_id)}">${esc(u.name)} · ${esc(u.role.replace("_", " "))}</option>`).join("") +
+    `</optgroup>`).join("");
+  const saved = store.get("meridian.who");
+  if (saved && users.some((u) => u.user_id === saved)) $("who").value = saved;
+}
+
+async function loadMe() {
+  const r = await api("/api/me");
+  if (!r.ok) { me = null; $("me").innerHTML = denial(r.body); return; }
+  me = r.body;
+  $("env").textContent = me.environment;
+  const scopes = me.scopes.length ? me.scopes.map((s) => `<span class="pill">${esc(s)}</span>`).join("") : '<span class="muted">none</span>';
+  $("me").innerHTML = `<div class="me">
+    <div><label>Name</label>${esc(me.name)}</div>
+    <div><label>Role</label>${esc(me.role)}</div>
+    <div><label>Group</label>${esc(me.group_ids.join(", "))}</div>
+    <div><label>Scopes</label>${scopes}</div>
+    <div><label>Can see</label>${me.visible_groups.length ? me.visible_groups.map((g) => `<span class="pill">${esc(g)}</span>`).join("") : '<span class="muted">no groups</span>'}</div>
+    <div><label>Usage connector</label>${me.connector_enabled ? '<span style="color:var(--ok)">enabled for your group</span>' : '<span style="color:var(--deny)">disabled for your group</span>'}</div>
+  </div>`;
+  $("week-group").innerHTML = `<option value="">all I can see</option>` +
+    me.visible_groups.map((g) => `<option>${esc(g)}</option>`).join("");
+}
+
+function platformCells(p) {
+  const by = Object.fromEntries(p.map((x) => [x.platform, x]));
+  return ["claude", "gemini"].map((k) => `<td>${tok(by[k]?.total_tokens)}</td><td>${usd(by[k]?.cost_usd)}</td>`).join("");
+}
+
+async function loadByGroup() {
+  const r = await api(`/api/usage/by-group?period=${encodeURIComponent($("period").value)}`);
+  if (!r.ok) { $("by-group").innerHTML = denial(r.body); return; }
+  const { groups, org_totals } = r.body;
+  const cov = groups[0]?.period.data_covers;
+  const head = `<thead><tr><th>Group</th><th>Claude tokens</th><th>Claude cost</th><th>Gemini tokens</th><th>Gemini cost</th><th>Total tokens</th><th>Total cost</th></tr></thead>`;
+  const rows = groups.map((g) => `<tr><td>${esc(g.group)}</td>${platformCells(g.platforms)}<td>${tok(g.totals.total_tokens)}</td><td>${usd(g.totals.cost_usd)}</td></tr>`).join("");
+  const foot = org_totals ? `<tfoot><tr><td>All groups</td>${platformCells(org_totals.platforms)}<td>${tok(org_totals.totals.total_tokens)}</td><td>${usd(org_totals.totals.cost_usd)}</td></tr></tfoot>` : "";
+  let note = "";
+  if (cov && !cov.complete) {
+    note = cov.start ? `<div class="note">Partial period: data covers ${esc(cov.start)} to ${esc(cov.end_exclusive)} (exclusive) only.</div>`
+                     : `<div class="note">No data in this period.</div>`;
+  }
+  $("by-group").innerHTML = `<table>${head}<tbody>${rows}</tbody>${foot}</table>${note}<div class="note">Gemini reports no request counts; Claude input tokens include cache reads and writes.</div>`;
+}
+
+async function loadWeekly() {
+  const g = $("week-group").value;
+  const r = await api(`/api/usage/weekly${g ? `?group=${encodeURIComponent(g)}` : ""}`);
+  if (!r.ok) { $("weekly").innerHTML = denial(r.body); return; }
+  const weeks = {};
+  for (const row of r.body) {
+    const w = (weeks[row.week] ??= { start: row.week_start, claude: { t: 0, c: 0 }, gemini: { t: 0, c: 0 } });
+    w[row.platform].t += row.total_tokens; w[row.platform].c += row.cost_usd;
+  }
+  const entries = Object.entries(weeks).sort();
+  const max = Math.max(1, ...entries.map(([, w]) => w.claude.c + w.gemini.c));
+  const rows = entries.map(([wk, w]) => {
+    const total = w.claude.c + w.gemini.c;
+    const bar = (c, color) => `<span class="bar" style="width:${Math.round((c / max) * 120)}px;background:var(${color});margin-left:0"></span>`;
+    return `<tr><td>${esc(wk)} <span class="muted">${esc(w.start)}</span></td>
+      <td>${tok(w.claude.t)}</td><td>${usd(w.claude.c)}</td><td>${tok(w.gemini.t)}</td><td>${usd(w.gemini.c)}</td>
+      <td>${usd(total)}</td><td style="text-align:left">${bar(w.claude.c, "--claude")}${bar(w.gemini.c, "--gemini")}</td></tr>`;
+  }).join("");
+  $("weekly").innerHTML = `<table><thead><tr><th>ISO week</th><th>Claude tokens</th><th>Claude cost</th><th>Gemini tokens</th><th>Gemini cost</th><th>Total cost</th>
+    <th style="text-align:left"><span class="bar" style="width:10px;background:var(--claude)"></span> Claude <span class="bar" style="width:10px;background:var(--gemini)"></span> Gemini</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function loadCaps() {
+  const r = await api("/api/capabilities");
+  if (!r.ok) { $("caps").innerHTML = denial(r.body); return; }
+  const canWrite = !!me && me.scopes.includes("capabilities:write");
+  const state = {};
+  for (const s of r.body) (state[s.group] ??= {})[s.capability] = s;
+  const rows = Object.keys(state).sort().map((g) => `<tr><td>${esc(g)}</td>` + CAPS.map((c) => {
+    const s = state[g][c];
+    const title = s ? `Last changed ${s.updated_at} by ${s.updated_by}` : "not set (disabled)";
+    return `<td class="cap" title="${esc(title)}"><input type="checkbox" data-group="${esc(g)}" data-cap="${esc(c)}" ${s?.enabled ? "checked" : ""} ${canWrite ? "" : "disabled"}></td>`;
+  }).join("") + `</tr>`).join("");
+  $("caps").innerHTML = `<table><thead><tr><th>Group</th>${CAPS.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table>` +
+    (canWrite ? "" : `<div class="note">Read only: your role does not hold <code>capabilities:write</code> in this environment.</div>`);
+  for (const box of $("caps").querySelectorAll("input[type=checkbox]")) box.addEventListener("change", onToggle);
+}
+
+async function onToggle(e) {
+  const box = e.target;
+  const r = await api(`/api/capabilities/${encodeURIComponent(box.dataset.group)}/${encodeURIComponent(box.dataset.cap)}`,
+    { method: "PUT", body: JSON.stringify({ enabled: box.checked }) });
+  if (!r.ok) { box.checked = !box.checked; toast(`Not allowed: ${r.body.reason || "request failed"}`); return; }
+  toast(`${r.body.capability} ${r.body.enabled ? "enabled" : "disabled"} for ${r.body.group}`);
+  await Promise.all([loadMe(), loadAudit()]);
+}
+
+async function loadAudit() {
+  const r = await api("/api/capabilities/audit");
+  if (!r.ok) { $("audit").innerHTML = denial(r.body); return; }
+  const rows = r.body.slice(0, 20).map((e) => `<tr><td>${esc(e.changed_at.replace("T", " ").replace("Z", ""))}</td><td style="text-align:left">${esc(e.group)}</td>
+    <td style="text-align:left">${esc(e.capability)}</td><td>${e.enabled ? "on" : "off"}</td><td style="text-align:left">${esc(e.changed_by)}</td></tr>`).join("");
+  $("audit").innerHTML = `<table><thead><tr><th>When (UTC)</th><th style="text-align:left">Group</th><th style="text-align:left">Capability</th><th>State</th><th style="text-align:left">By</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function refresh() {
+  await loadMe();
+  await Promise.all([loadByGroup(), loadWeekly(), loadCaps(), loadAudit()]);
+}
+
+(async function init() {
+  $("period").innerHTML = PERIODS.map((p) => `<option>${p}</option>`).join("");
+  $("period").value = store.get("meridian.period") || "last_30_days";
+  await loadUsers();
+  $("who").addEventListener("change", () => { store.set("meridian.who", $("who").value); refresh(); });
+  $("period").addEventListener("change", () => { store.set("meridian.period", $("period").value); loadByGroup(); });
+  $("week-group").addEventListener("change", loadWeekly);
+  const h = await fetch("/healthz").then((r) => r.json()).catch(() => ({}));
+  $("env").textContent = h.environment || "?";
+  await refresh();
+})();
+</script>
+</body>
+</html>
